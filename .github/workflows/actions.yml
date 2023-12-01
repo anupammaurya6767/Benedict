@@ -1,4 +1,4 @@
-name: run app.py
+name: run main.py
 
 on:
   push:
@@ -9,25 +9,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
 
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2 # Change to v2
         with:
-          python-version: '3.9' # install the python version needed
-          
+          python-version: '3.9'
+
       - name: install python packages
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: execute py script # run main.py
+
+      - name: execute py script
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: python main.py
-          
 
       - name: commit files
         run: |
@@ -35,7 +33,7 @@ jobs:
           git config --global user.name "anupammaurya6767"
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "🤖:updated" --allow-empty)
-          
+
       - name: push changes
         uses: ad-m/github-push-action@v0.6.0
         with:
