@@ -37,7 +37,7 @@ animelist = animelist.fillna("-")
 
 
 def notify(name, episode):
-    url = "https://express_server/notify"
+    url = "http://165.22.119.151:8100/notify"
     headers = {'content-type': 'application/json',
                'Authorization': f'Bearer {ACCESS_TOKEN}'}
     msg = f'Episode {episode} of “{name}” has been broadcast!🎉'
