@@ -6,13 +6,13 @@ import pandas as pd
 import requests
 import json
 from bs4 import BeautifulSoup
-from scraper.MAL import mal
-from scraper.bilibili import bilibili
-from scraper.illegal import get_latest_episode
+from scrapper.MAL import fetch_anime_details
+from scrapper.bilibili import fetch_latest_episode
+from scrapper.illegal import get_latest_episode
 
-if(not os.getenv("GITHUB_ACTIONS")):
-    from dotenv import load_dotenv
-    load_dotenv()
+# if(not os.getenv("GITHUB_ACTIONS")):
+#     from dotenv import load_dotenv
+#     load_dotenv()
   
 try:
     ACCESS_TOKEN = os.environ["ACCESS_TOKEN"]
@@ -59,15 +59,15 @@ for _, anime in animelist.iterrows():
     name, latest_episode, bilibili_scheme, pirate = anime.values
     fetched_episode = 0
     if bilibili_scheme not in ['-', '']:
-        fetched_episode = bilibili(f"https://www.bilibili.tv/th/play{bilibili_scheme}")
+        fetched_episode = fetch_latest_episode(f"https://www.bilibili.tv/th/play{bilibili_scheme}")
     else:
-        fetched_episode = get_latest_episode("https://animekimi.com/anime/tokyo-revengers-seiya-kessen-hen/")
+        fetched_episode = get_latest_episode(f"https://animekimi.com/anime/{name}/")
 
     print(name, fetched_episode)
     # logger.info(f'🤖: {name} {fetched_episode}')
 
     if fetched_episode > latest_episode:
         notify(name, fetched_episode)
-        animelist.loc[i] = [name, fetched_episode, bilibili_scheme, pirate]
+        animelist.loc[id] = [name, fetched_episode, bilibili_scheme, pirate]
 
 animelist.to_csv('./animelist.csv', index=False)
